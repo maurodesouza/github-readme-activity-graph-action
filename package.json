@@ -1,13 +1,35 @@
 {
   "name": "github-readme-activity-graph-action",
+  "displayName": "Github Readme Activity Graph Action",
+  "description": "GitHub Action for GitHub Readme Activity Graph",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "license": "ISC",
+  "author": "Mauro de Souza",
+  "type": "module",
+  "private": true,
+  "keywords": ["github", "github-actions", "activity-graph", "readme", "profile", "svg", "card", "stats"],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "packageManager": "pnpm@10.12.4"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/maurodesouza/github-readme-activity-graph-action"
+  },
+  "homepage": "https://github.com/maurodesouza/github-readme-activity-graph-action#readme",
+  "bugs": {
+    "url": "https://github.com/maurodesouza/github-readme-activity-graph-action/issues"
+  },
+  "engines": {
+    "node": ">=24.0.0",
+    "pnpm": ">=9.0.0"
+  },
+  "packageManager": "pnpm@10.12.4",
+  "dependencies": {
+    "@actions/core": "^3.0.1",
+    "github-readme-activity-graph": "github:maurodesouza/github-readme-activity-graph#fix/node-modules-paths",
+    "tsx": "^4.19.2"
+  },
+  "devDependencies": {
+    "vitest": "^4.1.5"
+  }
 }
