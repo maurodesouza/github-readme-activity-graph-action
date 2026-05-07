@@ -3,7 +3,7 @@
   "displayName": "Github Readme Activity Graph Action",
   "description": "GitHub Action for GitHub Readme Activity Graph",
   "version": "1.0.0",
-  "license": "ISC",
+  "license": "MIT",
   "author": "Mauro de Souza",
   "type": "module",
   "private": true,
