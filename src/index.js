@@ -20,7 +20,8 @@ async function run() {
     const query = { ...queryOptions, username: usernameInput };
 
     const outputPathValue = outputPathInput || path.join("dist", "activity-graph.svg");
-    const outputPath = path.resolve(process.cwd(), outputPathValue);
+    const workspace = process.env.GITHUB_WORKSPACE || process.cwd();
+    const outputPath = path.resolve(workspace, outputPathValue);
 
     await mkdir(path.dirname(outputPath), { recursive: true });
 
