@@ -51,8 +51,9 @@ runs:
 
     - name: Generate card
       id: generate
-      run: pnpm exec tsx ${{ github.action_path }}/src/index.js
+      run: pnpm exec tsx src/index.js
       shell: bash
+      working-directory: ${{ github.action_path }}
       env:
         INPUT_USERNAME: ${{ inputs.username }}
         INPUT_OPTIONS: ${{ inputs.options }}
