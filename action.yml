@@ -6,14 +6,17 @@ inputs:
   username:
     description: GitHub username to generate the activity graph for.
     required: true
+
   options:
     description: Options for the card (query string or JSON).
     required: false
     default: ""
+
   output_path:
     description: Output path for SVG file (relative path; include filename with .svg).
     required: false
     default: ""
+
   token:
     description: GitHub token (PAT or GITHUB_TOKEN). Falls back to github.token if not provided.
     required: false
@@ -27,16 +30,41 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Install pnpm
+    - name: Check lockfile
+      shell: bash
+      run: |
+        LOCKFILE="${{ github.action_path }}/pnpm-lock.yaml"
+
+        if [ -f "$LOCKFILE" ]; then
+          echo "lockfile exists"
+          echo "full path: $LOCKFILE"
+        else
+          echo "lockfile missing"
+        fi
+
+    - name: Setup pnpm
       uses: pnpm/action-setup@v5
       with:
         version: 10.12.4
-        cache: true
 
     - name: Setup Node.js
       uses: actions/setup-node@v6
       with:
         node-version: "24"
+
+    - name: Resolve pnpm store path
+      id: pnpm-store
+      shell: bash
+      run: |
+        echo "path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+
+    - name: Cache pnpm store
+      uses: actions/cache@v6
+      with:
+        path: ${{ steps.pnpm-store.outputs.path }}
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
 
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
@@ -53,6 +81,7 @@ runs:
         INPUT_OPTIONS: ${{ inputs.options }}
         INPUT_OUTPUT_PATH: ${{ inputs.output_path }}
         TOKEN: ${{ inputs.token || github.token }}
+
 branding:
   icon: bar-chart-2
   color: blue
