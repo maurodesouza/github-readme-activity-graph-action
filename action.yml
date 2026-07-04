@@ -30,20 +30,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Check lockfile
-      shell: bash
-      run: |
-        LOCKFILE="${{ github.action_path }}/pnpm-lock.yaml"
-
-        if [ -f "$LOCKFILE" ]; then
-          echo "lockfile exists"
-          echo "full path: $LOCKFILE"
-        else
-          echo "lockfile missing"
-        fi
-
     - name: Setup pnpm
-      uses: pnpm/action-setup@v5
+      uses: pnpm/action-setup@v6
       with:
         version: 10.12.4
 
@@ -52,16 +40,14 @@ runs:
       with:
         node-version: "24"
 
-    - name: Resolve pnpm store path
-      id: pnpm-store
+    - name: Configure pnpm store
       shell: bash
-      run: |
-        echo "path=$(pnpm store path --silent)" >> $GITHUB_OUTPUT
+      run: pnpm config set store-dir ~/.pnpm-store
 
     - name: Cache pnpm store
       uses: actions/cache@v6
       with:
-        path: ${{ steps.pnpm-store.outputs.path }}
+        path: ~/.pnpm-store
         key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
         restore-keys: |
           ${{ runner.os }}-pnpm-store-
