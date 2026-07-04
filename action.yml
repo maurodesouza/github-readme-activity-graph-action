@@ -27,13 +27,6 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Cache pnpm modules
-      uses: actions/cache@v6
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-pnpm-${{ hashFiles(format('{0}/pnpm-lock.yaml', github.action_path)) }}
-        restore-keys: ${{ runner.os }}-pnpm-
-
     - name: Install pnpm
       uses: pnpm/action-setup@v5
       with:
