@@ -6,14 +6,17 @@ inputs:
   username:
     description: GitHub username to generate the activity graph for.
     required: true
+
   options:
     description: Options for the card (query string or JSON).
     required: false
     default: ""
+
   output_path:
     description: Output path for SVG file (relative path; include filename with .svg).
     required: false
     default: ""
+
   token:
     description: GitHub token (PAT or GITHUB_TOKEN). Falls back to github.token if not provided.
     required: false
@@ -27,15 +30,8 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Cache pnpm modules
-      uses: actions/cache@v4
-      with:
-        path: ~/.pnpm-store
-        key: ${{ runner.os }}-pnpm-${{ hashFiles(format('{0}/pnpm-lock.yaml', github.action_path)) }}
-        restore-keys: ${{ runner.os }}-pnpm-
-
-    - name: Install pnpm
-      uses: pnpm/action-setup@v5
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v6
       with:
         version: 10.12.4
 
@@ -43,6 +39,18 @@ runs:
       uses: actions/setup-node@v6
       with:
         node-version: "24"
+
+    - name: Configure pnpm store
+      shell: bash
+      run: pnpm config set store-dir ~/.pnpm-store
+
+    - name: Cache pnpm store
+      uses: actions/cache@v6
+      with:
+        path: ~/.pnpm-store
+        key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+        restore-keys: |
+          ${{ runner.os }}-pnpm-store-
 
     - name: Install dependencies
       run: pnpm install --frozen-lockfile
@@ -59,6 +67,7 @@ runs:
         INPUT_OPTIONS: ${{ inputs.options }}
         INPUT_OUTPUT_PATH: ${{ inputs.output_path }}
         TOKEN: ${{ inputs.token || github.token }}
+
 branding:
   icon: bar-chart-2
   color: blue
